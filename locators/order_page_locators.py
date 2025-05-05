@@ -1,6 +1,7 @@
 from selenium.webdriver.common.by import By
 
 class OrderPageLocators:
+    COOKIE_BANNER = (By.ID, "rcc-confirm-button")
     NAME_FIELD = (By.XPATH, "//input[@placeholder='* Имя']")
     LAST_NAME_FIELD = (By.XPATH, "//input[@placeholder='* Фамилия']")
     ADDRESS_FIELD = (By.XPATH, "//input[@placeholder='* Адрес: куда привезти заказ']")
@@ -14,4 +15,7 @@ class OrderPageLocators:
     ORDER_BUTTON = (By.XPATH, "//button[@class='Button_Button__ra12g Button_Middle__1CSJM' and text()='Заказать']")
 
     CONFIRM_BUTTON = (By.XPATH, "//button[text()='Да']")
-    SUCCESS_MESSAGE = (By.XPATH, "//div[contains(@class, 'Order_Modal__YZ-d3')]")
+    PAGE_HEADER = (By.CLASS_NAME, 'Header_Header__3hI_1')
+    STATUS_BUTTON = (By.XPATH, "//button[text()='Посмотреть статус']")
+    SUCCESS_MESSAGE = (By.XPATH, "//div[contains(@class, 'Order_ModalHeader') and text()='Заказ оформлен']")
+    SUCCESS_TITLE = (By.CSS_SELECTOR, "div.Order_ModalHeader__3FDaJ")

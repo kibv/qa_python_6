@@ -23,8 +23,10 @@ class TestOrder:
             order_page.fill_first_step_form(user_data)
             order_page.fill_second_step_form(user_data)
 
-        with allure.step("Verify success message"):
-            assert "Заказ оформлен" in order_page.get_success_message()
+        with allure.step('Verify success message'):
+            success_text = order_page.get_success_message()
+            assert "Заказ оформлен" in success_text, \
+                f"Expected 'Заказ оформлен' in message, got: {success_text}"
 
     @allure.title("Test Scooter logo redirect")
     def test_scooter_logo_redirect(self, driver):
