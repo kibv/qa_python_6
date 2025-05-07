@@ -11,4 +11,3 @@ class MainPageLocators:
     YANDEX_LOGO = (By.CLASS_NAME, "Header_LogoYandex__3TSOI")
 
     COOKIE_BANNER = (By.ID, "rcc-confirm-button")
-

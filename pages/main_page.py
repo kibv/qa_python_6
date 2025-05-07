@@ -1,56 +1,53 @@
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import WebDriverWait
 from .base_page import BasePage
-from locators.main_page_locators import MainPageLocators
+from selenium.webdriver.support.ui import WebDriverWait
+from locators import MainPageLocators
+from data.data import URLS
 
 class MainPage(BasePage):
-    def close_cookie_banner(self):
-        try:
-            cookie_btn = WebDriverWait(self.driver, 5).until(
-                EC.element_to_be_clickable(MainPageLocators.COOKIE_BANNER)
-            )
-            cookie_btn.click()
-        except:
-            pass
+    def __init__(self, driver):
+        super().__init__(driver)
+        self.wait = WebDriverWait(driver, 15)
 
-    def click_scooter_logo(self):
+    def go_to_site(self):
+        self.driver.get(URLS.BASE_URL)
         self.close_cookie_banner()
-        logo = WebDriverWait(self.driver, 10).until(
-            EC.element_to_be_clickable(MainPageLocators.SCOOTER_LOGO)
-        )
-        logo.click()
-
-    def click_yandex_logo(self):
-        self.close_cookie_banner()
-        logo = WebDriverWait(self.driver, 10).until(
-            EC.element_to_be_clickable(MainPageLocators.YANDEX_LOGO)
-        )
-        logo.click()
-
-    def click_faq_question(self, index):
-        self.close_cookie_banner()
-        question_locator = (MainPageLocators.FAQ_QUESTION[0],
-                            MainPageLocators.FAQ_QUESTION[1].format(index))
-        question = WebDriverWait(self.driver, 15).until(
-            EC.element_to_be_clickable(question_locator)
-        )
-        self.driver.execute_script("arguments[0].scrollIntoView(true);", question)
-        self.driver.execute_script("arguments[0].click();", question)
 
     def click_order_button(self, position):
-        self.close_cookie_banner()
-        locator = (MainPageLocators.ORDER_BUTTON_HEADER if position == "top"
-                   else MainPageLocators.ORDER_BUTTON_FOOTER)
-        button = WebDriverWait(self.driver, 15).until(
-            EC.element_to_be_clickable(locator)
-        )
-        self.driver.execute_script("arguments[0].click();", button)
+        if position == "top":
+            order_button = self.wait_for_element(MainPageLocators.ORDER_BUTTON_HEADER)
+        else:
+            order_button = self.wait_for_element(MainPageLocators.ORDER_BUTTON_FOOTER)
+        order_button.click()
 
-    def get_faq_answer_text(self, index):
+    def click_scooter_logo(self):
+        scooter_logo = self.wait_for_element(MainPageLocators.SCOOTER_LOGO)
+        scooter_logo.click()
+
+    def click_yandex_logo(self):
+        yandex_logo = self.wait_for_element(MainPageLocators.YANDEX_LOGO)
+        yandex_logo.click()
+    def redirect_to_dzen(self):
+        main_window = self.driver.current_window_handle
+        self.click_element(MainPageLocators.YANDEX_LOGO)
+        self.switch_to_new_window(main_window, timeout=15)
+        self.check_url_contains(URLS.DZEN_URL, timeout=20)
+        return self.driver.current_url.startswith(URLS.DZEN_URL)
+
+
+
+    def get_question_and_answer(self, index):
+        question_locator = (
+            MainPageLocators.FAQ_QUESTION[0],
+            MainPageLocators.FAQ_QUESTION[1].format(index)
+        )
         answer_locator = (
             MainPageLocators.FAQ_ANSWER[0],
             MainPageLocators.FAQ_ANSWER[1].format(index)
         )
-        return WebDriverWait(self.driver, 15).until(
-            EC.visibility_of_element_located(answer_locator)
-        ).text
+
+        question = self.find_element(question_locator)
+        self.scroll_to_element(question)
+        question.click()
+        self.scroll_to_element(question)
+        answer = self.wait_for_element(answer_locator)
+        return question.text, answer.text
