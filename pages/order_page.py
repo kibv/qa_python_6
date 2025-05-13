@@ -1,15 +1,7 @@
 from pages.base_page import BasePage
 from locators import OrderPageLocators
-from data.data import URLS
 
 class OrderPage(BasePage):
-    def __init__(self, driver):
-        super().__init__(driver)
-
-    def go_to_order_page(self):
-        self.driver.get(URLS.ORDER_URL)
-        self.close_cookie_banner()
-
     def get_success_message(self):
         return self.find_element(OrderPageLocators.SUCCESS_TITLE).text
 
@@ -27,5 +19,4 @@ class OrderPage(BasePage):
         self.fill_field(OrderPageLocators.COMMENT_FIELD, user_data['comment'])
         self.click_element(OrderPageLocators.ORDER_BUTTON)
         self.click_element(OrderPageLocators.CONFIRM_BUTTON)
-
 

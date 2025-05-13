@@ -1,16 +1,21 @@
 from .base_page import BasePage
-from selenium.webdriver.support.ui import WebDriverWait
 from locators import MainPageLocators
 from data.data import URLS
+import allure
 
 class MainPage(BasePage):
-    def __init__(self, driver):
-        super().__init__(driver)
-        self.wait = WebDriverWait(driver, 15)
+    def click_order_top(self):
+        self.click(MainPageLocators.ORDER_BUTTON_HEADER)
 
-    def go_to_site(self):
-        self.driver.get(URLS.BASE_URL)
-        self.close_cookie_banner()
+    def click_order_bottom(self):
+        self.scroll_into_view(MainPageLocators.ORDER_BUTTON_FOOTER)
+        self.click(MainPageLocators.ORDER_BUTTON_FOOTER)
+
+    def click_scooter_logo(self):
+        self.click(MainPageLocators.SCOOTER_LOGO)
+
+    def click_yandex_logo(self):
+        self.click(MainPageLocators.YANDEX_LOGO)
 
     def click_order_button(self, position):
         if position == "top":
@@ -18,22 +23,12 @@ class MainPage(BasePage):
         else:
             order_button = self.wait_for_element(MainPageLocators.ORDER_BUTTON_FOOTER)
         order_button.click()
-
-    def click_scooter_logo(self):
-        scooter_logo = self.wait_for_element(MainPageLocators.SCOOTER_LOGO)
-        scooter_logo.click()
-
-    def click_yandex_logo(self):
-        yandex_logo = self.wait_for_element(MainPageLocators.YANDEX_LOGO)
-        yandex_logo.click()
     def redirect_to_dzen(self):
-        main_window = self.driver.current_window_handle
-        self.click_element(MainPageLocators.YANDEX_LOGO)
+        main_window = self.get_current_window_handle()
+        self.click_yandex_logo()
         self.switch_to_new_window(main_window, timeout=15)
         self.check_url_contains(URLS.DZEN_URL, timeout=20)
-        return self.driver.current_url.startswith(URLS.DZEN_URL)
-
-
+        return self.get_current_url().startswith(URLS.DZEN_URL)
 
     def get_question_and_answer(self, index):
         question_locator = (
@@ -44,10 +39,9 @@ class MainPage(BasePage):
             MainPageLocators.FAQ_ANSWER[0],
             MainPageLocators.FAQ_ANSWER[1].format(index)
         )
-
         question = self.find_element(question_locator)
-        self.scroll_to_element(question)
-        question.click()
-        self.scroll_to_element(question)
+        self.scroll_to_element(question_locator)
+        self.scroll_to_element(question_locator)
         answer = self.wait_for_element(answer_locator)
         return question.text, answer.text
+

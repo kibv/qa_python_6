@@ -7,6 +7,5 @@ def driver():
     options = FirefoxOptions()
     options.headless = False
     driver = webdriver.Firefox(options=options)
-    driver.implicitly_wait(10)
     yield driver
     driver.quit()

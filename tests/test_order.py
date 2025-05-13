@@ -11,7 +11,7 @@ class TestOrder:
     def test_order_flow(self, driver, position, user_data):
         with allure.step("Open main page"):
             main_page = MainPage(driver)
-            main_page.go_to_site()
+            main_page.open(URLS.BASE_URL)
 
         with allure.step(f"Click {position} order button"):
             main_page.click_order_button(position)
@@ -29,12 +29,14 @@ class TestOrder:
     @allure.title("Test Scooter logo redirect")
     def test_scooter_logo_redirect(self, driver):
         main_page = MainPage(driver)
-        main_page.go_to_site()
+        main_page.open(URLS.BASE_URL)
         main_page.click_scooter_logo()
         assert driver.current_url == URLS.BASE_URL
 
     @allure.title("Test Yandex logo redirect")
     def test_yandex_logo_redirect(self, driver):
         main_page = MainPage(driver)
-        main_page.go_to_site()
+        main_page.open(URLS.BASE_URL)
         assert main_page.redirect_to_dzen(), "Redirect dont working"
+
+
